@@ -268,23 +268,27 @@ def main():
             # Text input for English questions
             english_question = st.text_input("Enter your question in English:")
             if english_question:
-                # Process the English question
-                processed_english = process_with_gemini(english_question, medical_report, st.session_state.conversation_history)
-                
-                # Translate response to Tamil
-                tamil_response = translate_english_to_tamil(processed_english)
-                st.write(f"Answer: {tamil_response}")
-                
-                # Convert to speech
-                text_to_speech(tamil_response)
-                
-                # Store the conversation in history
-                st.session_state.conversation_history.append(f"Q: {english_question}")
-                st.session_state.conversation_history.append(f"A: {processed_english}")
-                
-                # Add a button to replay the answer
-                if st.button("Replay Answer"):
-                    text_to_speech(tamil_response)
+                with st.spinner('Processing your question...'):
+                    # Process the English question
+                    processed_english = process_with_gemini(english_question, medical_report, st.session_state.conversation_history)
+                    
+                    with st.spinner('Translating response...'):
+                        # Translate response to Tamil
+                        tamil_response = translate_english_to_tamil(processed_english)
+                        st.write(f"Answer: {tamil_response}")
+                        
+                        with st.spinner('Converting to speech...'):
+                            # Convert to speech
+                            text_to_speech(tamil_response)
+                            
+                            # Store the conversation in history
+                            st.session_state.conversation_history.append(f"Q: {english_question}")
+                            st.session_state.conversation_history.append(f"A: {processed_english}")
+                            
+                            # Add a button to replay the answer
+                            if st.button("Replay Answer"):
+                                with st.spinner('Converting to speech...'):
+                                    text_to_speech(tamil_response)
         
         with col2:
             st.subheader("Voice Input")
@@ -292,65 +296,77 @@ def main():
             if st.button("Interact"):
                 st.write("Listening... Please speak your question in Tamil")
                 
-                # Step 1: Listen to Tamil speech
-                tamil_text = listen_tamil()
-                if not tamil_text:
-                    st.error("Could not understand the speech. Please try again.")
-                    return
+                with st.spinner('Listening for speech...'):
+                    # Step 1: Listen to Tamil speech
+                    tamil_text = listen_tamil()
+                    if not tamil_text:
+                        st.error("Could not understand the speech. Please try again.")
+                        return
                 
-                # Step 2: Translate Tamil to English
-                english_text = translate_tamil_to_english(tamil_text)
-                st.write(f"Your question: {english_text}")
+                with st.spinner('Translating speech to text...'):
+                    # Step 2: Translate Tamil to English
+                    english_text = translate_tamil_to_english(tamil_text)
+                    st.write(f"Your question: {english_text}")
                 
-                # Step 3: Process with Gemini
-                processed_english = process_with_gemini(english_text, medical_report, st.session_state.conversation_history)
+                with st.spinner('Processing with AI...'):
+                    # Step 3: Process with Gemini
+                    processed_english = process_with_gemini(english_text, medical_report, st.session_state.conversation_history)
                 
-                # Step 4: Translate back to Tamil
-                final_tamil = translate_english_to_tamil(processed_english)
-                st.write(f"Answer: {final_tamil}")
+                with st.spinner('Translating response...'):
+                    # Step 4: Translate back to Tamil
+                    final_tamil = translate_english_to_tamil(processed_english)
+                    st.write(f"Answer: {final_tamil}")
                 
-                # Step 5: Convert to speech
-                text_to_speech(final_tamil)
-                
-                # Store the conversation in history
-                st.session_state.conversation_history.append(f"Q: {english_text}")
-                st.session_state.conversation_history.append(f"A: {processed_english}")
-                
-                # Add a button to replay the answer
-                if st.button("Replay Voice Answer"):
+                with st.spinner('Converting to speech...'):
+                    # Step 5: Convert to speech
                     text_to_speech(final_tamil)
+                    
+                    # Store the conversation in history
+                    st.session_state.conversation_history.append(f"Q: {english_text}")
+                    st.session_state.conversation_history.append(f"A: {processed_english}")
+                    
+                    # Add a button to replay the answer
+                    if st.button("Replay Voice Answer"):
+                        with st.spinner('Converting to speech...'):
+                            text_to_speech(final_tamil)
         
         # Add a button for follow-up question
         if st.button("Ask Follow-up Question"):
             st.write("Listening... Please speak your follow-up question in Tamil")
             
-            # Listen for follow-up question
-            followup_tamil = listen_tamil()
-            if not followup_tamil:
-                st.error("Could not understand the speech. Please try again.")
-                return
+            with st.spinner('Listening for speech...'):
+                # Listen for follow-up question
+                followup_tamil = listen_tamil()
+                if not followup_tamil:
+                    st.error("Could not understand the speech. Please try again.")
+                    return
             
-            # Translate follow-up question
-            followup_english = translate_tamil_to_english(followup_tamil)
-            st.write(f"Your follow-up question: {followup_english}")
+            with st.spinner('Translating speech to text...'):
+                # Translate follow-up question
+                followup_english = translate_tamil_to_english(followup_tamil)
+                st.write(f"Your follow-up question: {followup_english}")
             
-            # Process follow-up with conversation history
-            followup_response = process_with_gemini(followup_english, medical_report, st.session_state.conversation_history)
+            with st.spinner('Processing with AI...'):
+                # Process follow-up with conversation history
+                followup_response = process_with_gemini(followup_english, medical_report, st.session_state.conversation_history)
             
-            # Translate response
-            followup_tamil_response = translate_english_to_tamil(followup_response)
-            st.write(f"Answer: {followup_tamil_response}")
+            with st.spinner('Translating response...'):
+                # Translate response
+                followup_tamil_response = translate_english_to_tamil(followup_response)
+                st.write(f"Answer: {followup_tamil_response}")
             
-            # Convert to speech
-            text_to_speech(followup_tamil_response)
-            
-            # Store the follow-up in history
-            st.session_state.conversation_history.append(f"Q: {followup_english}")
-            st.session_state.conversation_history.append(f"A: {followup_response}")
-            
-            # Add a button to replay the follow-up answer
-            if st.button("Replay Follow-up Answer"):
+            with st.spinner('Converting to speech...'):
+                # Convert to speech
                 text_to_speech(followup_tamil_response)
+                
+                # Store the follow-up in history
+                st.session_state.conversation_history.append(f"Q: {followup_english}")
+                st.session_state.conversation_history.append(f"A: {followup_response}")
+                
+                # Add a button to replay the follow-up answer
+                if st.button("Replay Follow-up Answer"):
+                    with st.spinner('Converting to speech...'):
+                        text_to_speech(followup_tamil_response)
 
 if __name__ == "__main__":
     main()
